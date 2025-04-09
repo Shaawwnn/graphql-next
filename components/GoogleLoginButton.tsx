@@ -1,40 +1,37 @@
 'use client';
 
+import { useGoogle_AuthLazyQuery } from '@/generated';
 import { useAuth } from '@/hooks/useAuth';
-import { gql, useLazyQuery } from '@apollo/client';
 import { GoogleLogin } from '@react-oauth/google';
 import { JSX } from 'react';
 
-const GOOGLE_AUTH = gql`
-  query GoogleAuth($idToken: String) {
-    googleAuth(idToken: $idToken) {
-      _id
-      firstName
-      role
-      imageUrl
-      title
-    }
-  }
-`;
-
 export const GoogleButtonLogin = (): JSX.Element => {
   const { user, setAuth } = useAuth();
-  const [googleAuth, { data, loading, error }] = useLazyQuery(GOOGLE_AUTH, {
+  const [googleAuth, { data, loading, error }] = useGoogle_AuthLazyQuery({
     fetchPolicy: 'network-only'
   });
-  console.log(user);
+
   return (
     <>
       <GoogleLogin
-        onSuccess={credentialResponse => {
-          googleAuth({ variables: { idToken: credentialResponse.credential } });
-          if (data.googleAuth) setAuth(data.googleAuth);
+        onSuccess={async credentialResponse => {
+          if (credentialResponse.credential) {
+            await googleAuth({
+              variables: {
+                idToken: credentialResponse.credential
+              }
+            });
+
+            if (data) {
+              const { _id, email, role, firstName, lastName, imageUrl } = data.googleAuth;
+              setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
+            }
+          }
         }}
         onError={() => {
           console.log('Login Failed');
         }}
       />
-      <div>{user?.firstName}</div>
     </>
   );
 };
