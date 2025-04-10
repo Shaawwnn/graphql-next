@@ -3,16 +3,18 @@
 import { useGoogle_AuthLazyQuery } from '@/generated';
 import { useAuth } from '@/hooks/useAuth';
 import { GoogleLogin } from '@react-oauth/google';
+import { useRouter } from 'next/navigation';
 import { JSX } from 'react';
 
 export const GoogleButtonLogin = (): JSX.Element => {
-  const { user, setAuth } = useAuth();
-  const [googleAuth, { data, loading, error }] = useGoogle_AuthLazyQuery({
+  const { setAuth } = useAuth();
+  const [googleAuth, { data }] = useGoogle_AuthLazyQuery({
     fetchPolicy: 'network-only'
   });
+  const router = useRouter();
 
   return (
-    <>
+    <div className="w-full h-1/2 flex items-center justify-center">
       <GoogleLogin
         onSuccess={async credentialResponse => {
           if (credentialResponse.credential) {
@@ -25,6 +27,7 @@ export const GoogleButtonLogin = (): JSX.Element => {
             if (data) {
               const { _id, email, role, firstName, lastName, imageUrl } = data.googleAuth;
               setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
+              router.push('/');
             }
           }
         }}
@@ -32,6 +35,6 @@ export const GoogleButtonLogin = (): JSX.Element => {
           console.log('Login Failed');
         }}
       />
-    </>
+    </div>
   );
 };

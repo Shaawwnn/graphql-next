@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { useLoginMutation } from '@/generated';
 import { useAuth } from '@/hooks/useAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { GoogleButtonLogin } from '../../components/GoogleLoginButton';
@@ -18,7 +20,7 @@ const loginSchema = z.object({
 
 const Login: React.FC<{}> = () => {
   const [login, { data, error, loading }] = useLoginMutation();
-  const { setAuth } = useAuth();
+  const { user, setAuth } = useAuth();
   const router = useRouter();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -27,6 +29,12 @@ const Login: React.FC<{}> = () => {
       password: ''
     }
   });
+
+  useEffect(() => {
+    if (user?.uid) {
+      router.replace('/'); // redirect to home
+    }
+  }, [user, router]);
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     // ✅ This will be type-safe and validated.
@@ -89,7 +97,7 @@ const Login: React.FC<{}> = () => {
             )}
           />
           <Button className="mt-2" type="submit">
-            Submit
+            Sign In
           </Button>
           <div className="flex items-center gap-2 my-4">
             <hr className="flex-grow border-t border-gray-300" />
@@ -97,6 +105,12 @@ const Login: React.FC<{}> = () => {
             <hr className="flex-grow border-t border-gray-300" />
           </div>
           <GoogleButtonLogin />
+          <div className="text-center text-xs mt-10">
+            Don't have an account?{' '}
+            <Link href="/register" className="text-blue-500 hover:underline">
+              Sign Up
+            </Link>
+          </div>
         </form>
       </Form>
     </div>

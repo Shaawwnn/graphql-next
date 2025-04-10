@@ -235,6 +235,13 @@ export type Google_AuthQueryVariables = Exact<{
 
 export type Google_AuthQuery = { __typename?: 'Query', googleAuth: { __typename?: 'User', _id: string, email: string, firstName: string, lastName: string, role: UserRole, imageUrl: string | null } };
 
+export type Create_UserMutationVariables = Exact<{
+  userInput: CreateUserInput;
+}>;
+
+
+export type Create_UserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', _id: string, email: string, firstName: string, lastName: string, role: UserRole, imageUrl: string | null } };
+
 
 export const LoginDocument = gql`
     mutation LOGIN($email: String!, $password: String!) {
@@ -364,3 +371,41 @@ export type Google_AuthQueryHookResult = ReturnType<typeof useGoogle_AuthQuery>;
 export type Google_AuthLazyQueryHookResult = ReturnType<typeof useGoogle_AuthLazyQuery>;
 export type Google_AuthSuspenseQueryHookResult = ReturnType<typeof useGoogle_AuthSuspenseQuery>;
 export type Google_AuthQueryResult = Apollo.QueryResult<Google_AuthQuery, Google_AuthQueryVariables>;
+export const Create_UserDocument = gql`
+    mutation CREATE_USER($userInput: CreateUserInput!) {
+  createUser(userInput: $userInput) {
+    _id
+    email
+    firstName
+    lastName
+    role
+    imageUrl
+  }
+}
+    `;
+export type Create_UserMutationFn = Apollo.MutationFunction<Create_UserMutation, Create_UserMutationVariables>;
+
+/**
+ * __useCreate_UserMutation__
+ *
+ * To run a mutation, you first call `useCreate_UserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreate_UserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreate_UserMutation({
+ *   variables: {
+ *      userInput: // value for 'userInput'
+ *   },
+ * });
+ */
+export function useCreate_UserMutation(baseOptions?: Apollo.MutationHookOptions<Create_UserMutation, Create_UserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Create_UserMutation, Create_UserMutationVariables>(Create_UserDocument, options);
+      }
+export type Create_UserMutationHookResult = ReturnType<typeof useCreate_UserMutation>;
+export type Create_UserMutationResult = Apollo.MutationResult<Create_UserMutation>;
+export type Create_UserMutationOptions = Apollo.BaseMutationOptions<Create_UserMutation, Create_UserMutationVariables>;

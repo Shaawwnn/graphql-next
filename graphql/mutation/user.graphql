@@ -30,3 +30,14 @@ query GOOGLE_AUTH($idToken: String) {
     imageUrl
   }
 }
+
+mutation CREATE_USER($userInput: CreateUserInput!) {
+  createUser(userInput: $userInput) {
+    _id
+    email
+    firstName
+    lastName
+    role
+    imageUrl
+  }
+}
