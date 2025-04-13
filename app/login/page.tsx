@@ -36,31 +36,26 @@ const Login: React.FC<{}> = () => {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    if (data) {
+      const { _id, email, role, firstName, lastName, imageUrl } = data.login;
+      setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
+
+      router.push('/');
+    }
+  }, [data]);
+
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    // ✅ This will be type-safe and validated.
     await login({
       variables: {
         email: values.email,
         password: values.password
       }
     });
-
-    if (error) {
-      console.error('Login error:', error);
-    }
-
-    if (data) {
-      const { _id, email, role, firstName, lastName, imageUrl } = data.login;
-      setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
-
-      router.push('/');
-    } else {
-      console.error('Login failed:', error);
-    }
   };
 
   if (error) {
-    window.alert(error);
+    console.error('Login error:', error);
   }
 
   if (loading) {
@@ -71,7 +66,7 @@ const Login: React.FC<{}> = () => {
     <div className="flex items-center justify-center h-screen">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 w-72 max-w-sm">
-          <h1 className="text-3xl font-bold mb-4">Login</h1>
+          <h1 className="text-center text-3xl font-bold mb-4">Login</h1>
           <FormField
             control={form.control}
             name="email"
@@ -96,6 +91,7 @@ const Login: React.FC<{}> = () => {
               </FormItem>
             )}
           />
+          {error && <div className="text-red-500 text-sm">Invalid name or password</div>}
           <Button className="mt-2" type="submit">
             Sign In
           </Button>
