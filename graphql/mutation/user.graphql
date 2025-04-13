@@ -41,3 +41,7 @@ mutation CREATE_USER($userInput: CreateUserInput!) {
     imageUrl
   }
 }
+
+mutation LOGOUT {
+  logout
+}

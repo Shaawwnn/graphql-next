@@ -1,6 +1,6 @@
 'use client';
 
-import { useMeQuery } from '@/generated';
+import { useLogoutMutation, useMeQuery } from '@/generated';
 import { AuthUser } from '@/types/AuthUser';
 import { useApolloClient } from '@apollo/client';
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ export const AuthContext = createContext<IAuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [auth, setAuth] = useState<AuthUser>();
+  const [_logout] = useLogoutMutation();
   const client = useApolloClient();
   const { data } = useMeQuery();
 
@@ -29,11 +30,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Logout function
   const logout = async () => {
-    await fetch('http://localhost:4000/graphql', {
-      method: 'POST',
-      credentials: 'include' // Ensure cookies are included
-    });
-
+    await _logout();
+    setAuth(undefined);
     // Reset Apollo cache to remove user data
     await client.clearStore();
   };
