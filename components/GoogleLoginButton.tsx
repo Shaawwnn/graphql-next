@@ -4,14 +4,28 @@ import { useGoogle_AuthLazyQuery } from '@/generated';
 import { useAuth } from '@/hooks/useAuth';
 import { GoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
-import { JSX } from 'react';
+import { useEffect } from 'react';
 
-export const GoogleButtonLogin = (): JSX.Element => {
-  const { setAuth } = useAuth();
+export const GoogleButtonLogin: React.FC = () => {
+  const { user, setAuth } = useAuth();
   const [googleAuth, { data }] = useGoogle_AuthLazyQuery({
     fetchPolicy: 'network-only'
   });
   const router = useRouter();
+
+  useEffect(() => {
+    if (user?.uid) {
+      router.replace('/home'); // redirect to home
+    }
+  }, [user, router]);
+
+  useEffect(() => {
+    if (data) {
+      const { _id, email, role, firstName, lastName, imageUrl } = data.googleAuth;
+      setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
+      router.push('/home');
+    }
+  }, [data, router, setAuth]);
 
   return (
     <div className="w-full h-1/2 flex items-center justify-center">
@@ -23,12 +37,6 @@ export const GoogleButtonLogin = (): JSX.Element => {
                 idToken: credentialResponse.credential
               }
             });
-
-            if (data) {
-              const { _id, email, role, firstName, lastName, imageUrl } = data.googleAuth;
-              setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
-              router.push('/');
-            }
           }
         }}
         onError={() => {

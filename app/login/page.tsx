@@ -1,5 +1,6 @@
 'use client';
 
+import { GoogleButtonLogin } from '@/components/GoogleLoginButton';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -7,21 +8,18 @@ import { useLoginMutation } from '@/generated';
 import { useAuth } from '@/hooks/useAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { GoogleButtonLogin } from '../../components/GoogleLoginButton';
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(2).max(50)
 });
 
-const Login: React.FC<{}> = () => {
-  const [login, { data, error, loading }] = useLoginMutation();
-  const { user, setAuth } = useAuth();
-  const router = useRouter();
+const Login: React.FC = () => {
+  const [login, { data, error }] = useLoginMutation();
+  const { setAuth } = useAuth();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -31,19 +29,11 @@ const Login: React.FC<{}> = () => {
   });
 
   useEffect(() => {
-    if (user?.uid) {
-      router.replace('/'); // redirect to home
-    }
-  }, [user, router]);
-
-  useEffect(() => {
     if (data) {
       const { _id, email, role, firstName, lastName, imageUrl } = data.login;
       setAuth({ uid: _id, email, role, firstName, lastName, imageUrl });
-
-      router.push('/');
     }
-  }, [data]);
+  }, [data, setAuth]);
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     await login({
@@ -56,10 +46,6 @@ const Login: React.FC<{}> = () => {
 
   if (error) {
     console.error('Login error:', error);
-  }
-
-  if (loading) {
-    return <div>Loading...</div>;
   }
 
   return (
@@ -102,7 +88,7 @@ const Login: React.FC<{}> = () => {
           </div>
           <GoogleButtonLogin />
           <div className="text-center text-xs mt-10">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className="text-blue-500 hover:underline">
               Sign Up
             </Link>
