@@ -1,5 +1,6 @@
 'use client';
 
+import { Spinner } from '@/components/Spinner';
 import { useLogoutMutation, useMeQuery } from '@/generated';
 import { AuthUser } from '@/types/AuthUser';
 import { useApolloClient } from '@apollo/client';
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [auth, setAuth] = useState<AuthUser>();
   const [_logout] = useLogoutMutation();
   const client = useApolloClient();
-  const { data } = useMeQuery();
+  const { data, loading } = useMeQuery();
 
   useEffect(() => {
     if (data) {
@@ -35,6 +36,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Reset Apollo cache to remove user data
     await client.clearStore();
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return <AuthContext.Provider value={{ user: auth || null, logout, setAuth }}>{children}</AuthContext.Provider>;
 };
