@@ -1,9 +1,9 @@
-const Home: React.FC = () => {
+const LandingPage: React.FC = () => {
   return (
     <div className="flex h-screen">
-      <h1 className="mx-auto my-auto">Home Page</h1>
+      <h1 className="mx-auto my-auto">Landing Page</h1>
     </div>
   );
 };
 
-export default Home;
+export default LandingPage;
