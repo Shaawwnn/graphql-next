@@ -4,14 +4,12 @@ import { GoogleButtonLogin } from '@/components/GoogleLoginButton';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { CreateUserInput, useCreate_UserMutation, UserRole } from '@/generated';
+import { useCreate_UserMutation, UserRole } from '@/generated';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-type x = CreateUserInput;
 
 const registerSchema = z
   .object({
@@ -28,7 +26,7 @@ const registerSchema = z
   });
 
 const Register: React.FC = () => {
-  const [createUser, { data, error, loading }] = useCreate_UserMutation();
+  const [createUser] = useCreate_UserMutation();
   const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
