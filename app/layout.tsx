@@ -1,4 +1,3 @@
-import { NavBar } from '@/components/NavBar';
 import { Providers } from '@/context_providers/Providers';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import type { Metadata } from 'next';
@@ -29,10 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-          <GoogleOAuthProvider clientId={process.env.OAUTH_CLIENT_ID || ''}>
-            <NavBar />
-            {children}
-          </GoogleOAuthProvider>
+          <GoogleOAuthProvider clientId={process.env.OAUTH_CLIENT_ID || ''}>{children}</GoogleOAuthProvider>
         </Providers>
       </body>
     </html>
