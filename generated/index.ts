@@ -243,6 +243,13 @@ export type Create_UserMutationVariables = Exact<{
 
 export type Create_UserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', _id: string, email: string, firstName: string, lastName: string, role: UserRole, imageUrl: string | null } };
 
+export type Get_UserQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type Get_UserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', firstName: string, lastName: string, email: string, contactNumber: string | null, pronouns: string | null, role: UserRole, imageUrl: string | null, bio: string | null, rating: number | null, title: string | null } };
+
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -415,6 +422,55 @@ export function useCreate_UserMutation(baseOptions?: Apollo.MutationHookOptions<
 export type Create_UserMutationHookResult = ReturnType<typeof useCreate_UserMutation>;
 export type Create_UserMutationResult = Apollo.MutationResult<Create_UserMutation>;
 export type Create_UserMutationOptions = Apollo.BaseMutationOptions<Create_UserMutation, Create_UserMutationVariables>;
+export const Get_UserDocument = gql`
+    query GET_USER($id: ID!) {
+  getUser(id: $id) {
+    firstName
+    lastName
+    email
+    contactNumber
+    pronouns
+    role
+    imageUrl
+    bio
+    rating
+    title
+  }
+}
+    `;
+
+/**
+ * __useGet_UserQuery__
+ *
+ * To run a query within a React component, call `useGet_UserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGet_UserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGet_UserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGet_UserQuery(baseOptions: Apollo.QueryHookOptions<Get_UserQuery, Get_UserQueryVariables> & ({ variables: Get_UserQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Get_UserQuery, Get_UserQueryVariables>(Get_UserDocument, options);
+      }
+export function useGet_UserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Get_UserQuery, Get_UserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Get_UserQuery, Get_UserQueryVariables>(Get_UserDocument, options);
+        }
+export function useGet_UserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Get_UserQuery, Get_UserQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Get_UserQuery, Get_UserQueryVariables>(Get_UserDocument, options);
+        }
+export type Get_UserQueryHookResult = ReturnType<typeof useGet_UserQuery>;
+export type Get_UserLazyQueryHookResult = ReturnType<typeof useGet_UserLazyQuery>;
+export type Get_UserSuspenseQueryHookResult = ReturnType<typeof useGet_UserSuspenseQuery>;
+export type Get_UserQueryResult = Apollo.QueryResult<Get_UserQuery, Get_UserQueryVariables>;
 export const LogoutDocument = gql`
     mutation LOGOUT {
   logout

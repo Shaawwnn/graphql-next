@@ -42,6 +42,21 @@ mutation CREATE_USER($userInput: CreateUserInput!) {
   }
 }
 
+query GET_USER($id: ID!) {
+  getUser(id: $id) {
+    firstName
+    lastName
+    email
+    contactNumber
+    pronouns
+    role
+    imageUrl
+    bio
+    rating
+    title
+  }
+}
+
 mutation LOGOUT {
   logout
 }
